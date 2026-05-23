@@ -5,6 +5,9 @@
   vars:
     project_root: "{{ playbook_dir }}/.."
     deploy_path: /opt/marketplace
+    mongo_username: "{{ lookup('env', 'MONGO_USERNAME') | default('admin', true) }}"
+    mongo_password: "{{ lookup('env', 'MONGO_PASSWORD') | default('changeme', true) }}"
+    mongo_db: "{{ lookup('env', 'MONGO_DB') | default('store', true) }}"
 
   tasks:
     - name: Install Docker
@@ -54,6 +57,15 @@
         src: "{{ project_root }}/docker/"
         dest: "{{ deploy_path }}/docker/"
         mode: preserve
+
+    - name: Write Mongo credentials .env for docker compose
+      ansible.builtin.copy:
+        dest: "{{ deploy_path }}/docker/.env"
+        mode: "0600"
+        content: |
+          MONGO_USERNAME={{ mongo_username }}
+          MONGO_PASSWORD={{ mongo_password }}
+          MONGO_DB={{ mongo_db }}
 
     - name: Start Docker Compose stack
       ansible.builtin.command:

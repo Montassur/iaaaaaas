@@ -3,6 +3,10 @@ services:
     image: mongo:6
     container_name: marketplace-mongo
     restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-changeme}
+      MONGO_INITDB_DATABASE: ${MONGO_DB:-store}
     volumes:
       - db_data:/data/db
     networks:
@@ -15,7 +19,7 @@ services:
     container_name: marketplace-app
     restart: unless-stopped
     environment:
-      MONGO_URI: mongodb://mongo:27017/store
+      MONGO_URI: mongodb://${MONGO_USERNAME:-admin}:${MONGO_PASSWORD:-changeme}@mongo:27017/${MONGO_DB:-store}?authSource=admin
       PORT: "3000"
     depends_on:
       - mongo

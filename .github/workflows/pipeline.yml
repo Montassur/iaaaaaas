@@ -105,6 +105,9 @@ jobs:
         run: ansible-playbook -i inventory.ini ansible/deploy.yml
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
+          MONGO_USERNAME: ${{ secrets.MONGO_USERNAME }}
+          MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
+          MONGO_DB: ${{ secrets.MONGO_DB }}
 
   destroy:
     name: Destroy Infrastructure (Manual)

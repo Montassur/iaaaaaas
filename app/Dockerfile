@@ -9,7 +9,6 @@ COPY server.js ecosystem.config.cjs ./
 
 ENV NODE_ENV=production
 ENV PORT=3000
-ENV MONGO_URI=mongodb://mongo:27017/shop
 
 EXPOSE 3000
 
