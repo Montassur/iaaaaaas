@@ -53,7 +53,7 @@ jobs:
         run: terraform validate
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan -var="key_name=${{ secrets.EC2_KEY_NAME }}"
+        run: terraform plan -out=tfplan -var="ssh_key_name=${{ secrets.EC2_KEY_NAME }}"
 
       - name: Terraform Apply
         id: terraform-apply
@@ -62,7 +62,7 @@ jobs:
       - name: Export Instance IPs
         id: export
         run: |
-          IPS=$(terraform output -json instance_public_ips | jq -r '.[]' | tr '\n' ',' | sed 's/,$//')
+          IPS=$(terraform output -json server_public_ips | jq -r '.[]' | tr '\n' ',' | sed 's/,$//')
           echo "instance_ips=$IPS" >> $GITHUB_OUTPUT
 
       - name: Upload Terraform State
@@ -136,4 +136,4 @@ jobs:
         run: terraform init
 
       - name: Terraform Destroy
-        run: terraform destroy -auto-approve -var="key_name=${{ secrets.EC2_KEY_NAME }}"
+        run: terraform destroy -auto-approve -var="ssh_key_name=${{ secrets.EC2_KEY_NAME }}"

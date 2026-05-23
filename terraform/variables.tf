@@ -1,24 +1,24 @@
-variable "aws_region" {
+variable "region" {
   type    = string
   default = "us-east-1"
 }
 
-variable "key_name" {
+variable "ssh_key_name" {
   type        = string
   description = "Name of an existing EC2 key pair in AWS"
 }
 
-variable "instance_count" {
+variable "server_count" {
   type    = number
   default = 2
 }
 
-variable "instance_type" {
+variable "server_type" {
   type    = string
   default = "t3.micro"
 }
 
-variable "project_name" {
+variable "app_name" {
   type    = string
-  default = "ecommerce-devops-lab"
+  default = "marketplace-devops-lab"
 }

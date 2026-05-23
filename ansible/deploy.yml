@@ -1,10 +1,10 @@
 ---
-- name: Deploy ecommerce stack
+- name: Deploy marketplace stack
   hosts: web
   become: true
   vars:
     project_root: "{{ playbook_dir }}/.."
-    deploy_path: /opt/ecommerce
+    deploy_path: /opt/marketplace
 
   tasks:
     - name: Install Docker

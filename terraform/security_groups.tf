@@ -1,5 +1,5 @@
 resource "aws_security_group" "alb" {
-  name        = "${var.project_name}-alb-sg"
+  name        = "${var.app_name}-alb-sg"
   description = "ALB security group"
   vpc_id      = aws_vpc.main.id
 
@@ -18,12 +18,12 @@ resource "aws_security_group" "alb" {
   }
 
   tags = {
-    Name = "${var.project_name}-alb-sg"
+    Name = "${var.app_name}-alb-sg"
   }
 }
 
 resource "aws_security_group" "web" {
-  name        = "${var.project_name}-web-sg"
+  name        = "${var.app_name}-web-sg"
   description = "EC2 web security group"
   vpc_id      = aws_vpc.main.id
 
@@ -49,6 +49,6 @@ resource "aws_security_group" "web" {
   }
 
   tags = {
-    Name = "${var.project_name}-web-sg"
+    Name = "${var.app_name}-web-sg"
   }
 }

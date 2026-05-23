@@ -2,28 +2,28 @@ const express = require("express");
 const { MongoClient } = require("mongodb");
 
 const app = express();
-const port = process.env.PORT || 3000;
-const mongoUri = process.env.MONGO_URI || "mongodb://mongo:27017/shop";
+const serverPort = process.env.PORT || 3000;
+const dbUri = process.env.MONGO_URI || "mongodb://mongo:27017/store";
 
-let db;
-let productsCollection;
+let database;
+let itemsCollection;
 
-const defaultProducts = [
+const seedItems = [
   { name: "Laptop", price: 1200 },
   { name: "Phone", price: 800 }
 ];
 
-async function connectMongo() {
-  const client = new MongoClient(mongoUri);
+async function initDatabase() {
+  const client = new MongoClient(dbUri);
   let attempt = 0;
   while (attempt < 30) {
     try {
       await client.connect();
-      db = client.db();
-      productsCollection = db.collection("products");
-      const count = await productsCollection.countDocuments();
-      if (count === 0) {
-        await productsCollection.insertMany(defaultProducts);
+      database = client.db();
+      itemsCollection = database.collection("products");
+      const itemCount = await itemsCollection.countDocuments();
+      if (itemCount === 0) {
+        await itemsCollection.insertMany(seedItems);
       }
       return;
     } catch (err) {
@@ -34,7 +34,7 @@ async function connectMongo() {
   throw new Error("MongoDB connection failed");
 }
 
-function renderPage(products) {
+function buildHtml(products) {
   const items = products
     .map((p) => `<li>${p.name} $${p.price}</li>`)
     .join("");
@@ -43,7 +43,7 @@ function renderPage(products) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>E-Commerce Store</title>
+  <title>Online Marketplace</title>
   <style>
     body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; }
     h1 { color: #1a1a2e; }
@@ -51,7 +51,7 @@ function renderPage(products) {
   </style>
 </head>
 <body>
-  <h1>E-Commerce Store</h1>
+  <h1>Online Marketplace</h1>
   <ul>${items}</ul>
 </body>
 </html>`;
@@ -62,19 +62,19 @@ app.get("/api/health", (req, res) => {
 });
 
 app.get("/api/products", async (req, res) => {
-  const products = await productsCollection.find({}).toArray();
+  const products = await itemsCollection.find({}).toArray();
   res.json(products);
 });
 
 app.get("/", async (req, res) => {
-  const products = await productsCollection.find({}).toArray();
-  res.type("html").send(renderPage(products));
+  const products = await itemsCollection.find({}).toArray();
+  res.type("html").send(buildHtml(products));
 });
 
-connectMongo()
+initDatabase()
   .then(() => {
-    app.listen(port, "0.0.0.0", () => {
-      console.log(`Server listening on ${port}`);
+    app.listen(serverPort, "0.0.0.0", () => {
+      console.log(`Server listening on ${serverPort}`);
     });
   })
   .catch((err) => {

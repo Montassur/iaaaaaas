@@ -1,30 +1,30 @@
 services:
   mongo:
     image: mongo:6
-    container_name: ecommerce-mongo
+    container_name: marketplace-mongo
     restart: unless-stopped
     volumes:
-      - mongo_data:/data/db
+      - db_data:/data/db
     networks:
-      - ecommerce
+      - marketplace
 
   app:
     build:
       context: ../app
       dockerfile: Dockerfile
-    container_name: ecommerce-app
+    container_name: marketplace-app
     restart: unless-stopped
     environment:
-      MONGO_URI: mongodb://mongo:27017/shop
+      MONGO_URI: mongodb://mongo:27017/store
       PORT: "3000"
     depends_on:
       - mongo
     networks:
-      - ecommerce
+      - marketplace
 
   nginx:
     image: nginx:alpine
-    container_name: ecommerce-nginx
+    container_name: marketplace-nginx
     restart: unless-stopped
     ports:
       - "80:80"
@@ -33,11 +33,11 @@ services:
     depends_on:
       - app
     networks:
-      - ecommerce
+      - marketplace
 
 volumes:
-  mongo_data:
+  db_data:
 
 networks:
-  ecommerce:
+  marketplace:
     driver: bridge
